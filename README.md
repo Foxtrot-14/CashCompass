@@ -24,7 +24,7 @@ CashCompass is an application designed to help users manage and share daily expe
 
     ```bash
     git clone https://github.com/Foxtrot-14/CashCompass.git
-    cd cashcompass
+    cd CashCompass
     ```
 
 2. **Create and Activate a Virtual Environment**

@@ -22,10 +22,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'account',
     'corsheaders',
     'rest_framework_simplejwt',
     'rest_framework',
-    'account'
 ]
 
 MIDDLEWARE = [
@@ -131,7 +131,7 @@ SIMPLE_JWT = {
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 
