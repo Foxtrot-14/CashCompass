@@ -30,7 +30,7 @@ CashCompass is an application designed to help users manage and share daily expe
 2. **Create and Activate a Virtual Environment**
 
     ```bash
-    python -m virtualenv venv
+    python3 -m virtualenv venv
     source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
     ```
 

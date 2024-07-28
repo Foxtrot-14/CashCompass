@@ -20,7 +20,7 @@ class UserManager(BaseUserManager):
         return user
 
 class User(AbstractBaseUser):
-
+    id = models.AutoField(primary_key=True)
     phone = models.CharField(
         verbose_name='Phone',
         max_length=15,
