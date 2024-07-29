@@ -65,7 +65,7 @@ CashCompass is an application designed to help users manage and share daily expe
 ## API Endpoints
 The application uses JWT for authentication. Obtain a token by making a POST request to the `account/register/` endpoint with your credentials.
 
-- **Register Usre**
+- **Register User**
 
     ```http
     POST /account/register/
@@ -75,11 +75,11 @@ The application uses JWT for authentication. Obtain a token by making a POST req
 
     ```json
     {
-    "email":"jhondoe3@gmail.com",
-    "phone":"456121",
-    "name":"Jhon Doe",
-    "password1":"test",
-    "password2":"test"
+        "email": "jhondoe3@gmail.com",
+        "phone": "456121",
+        "name": "Jhon Doe",
+        "password1": "test",
+        "password2": "test"
     }
     ```
 
@@ -92,22 +92,22 @@ The application uses JWT for authentication. Obtain a token by making a POST req
     }
     ```
 
-**Login**
+- **Login**
 
     ```http
     POST /account/login/
     ```
 
- **Request Body:**
+    **Request Body:**
 
     ```json
     {
-    "identifier":"jhondoe3@gmail.com",
-    "password1":"test"
+        "identifier": "jhondoe3@gmail.com",
+        "password1": "test"
     }
     ```
 
- **Response:**
+    **Response:**
 
     ```json
     {
@@ -124,23 +124,27 @@ The application uses JWT for authentication. Obtain a token by making a POST req
     POST /api/expense-create/
     ```
 
- **Request Body:**
+    **Request Body:**
 
     ```json
     {
-    "title": "Office Supplies",
+        "title": "Office Supplies",
         "description": "Purchase of office supplies including pens and paper.",
         "type": 2,
         "cost": 200,
-        "participants":[{
-        "participant":3,
-        "contribution":25
-        },{
-        "participant":4,
-        "contribution":50
-        }]
+        "participants": [
+            {
+                "participant": 3,
+                "contribution": 25
+            },
+            {
+                "participant": 4,
+                "contribution": 50
+            }
+        ]
     }
     ```
+
 - **Get All Expenses for a User**
 
     ```http
@@ -160,21 +164,24 @@ The application uses JWT for authentication. Obtain a token by making a POST req
     POST /api/expense/{expense_id}/
     ```
 
- **Request Body:**
+    **Request Body:**
 
     ```json
     {
-    "title": "Office Supplies",
+        "title": "Office Supplies",
         "description": "Purchase of office supplies including pens and paper.",
-        "type": 3, //changin type
+        "type": 3, // changing type
         "cost": 200,
-        "participants":[{
-        "participant":3,
-        "contribution":25
-        },{
-        "participant":4,
-        "contribution":50
-        }]
+        "participants": [
+            {
+                "participant": 3,
+                "contribution": 25
+            },
+            {
+                "participant": 4,
+                "contribution": 50
+            }
+        ]
     }
     ```
 
@@ -204,11 +211,11 @@ The application uses JWT for authentication. Obtain a token by making a POST req
     - `title`: Required, string.
     - `description`: Optional, maximum length of 255 characters.
     - `type`: Required, an integer 1 for `"exact"`, 2 for `"equal"`, or 3 for `"percentage"`.
-    - `participants`: Required, an array of objects, every object must have `participant` and if type is `"exact"` or `"percentage"` then the object must also contain `contribution`.
+    - `participants`: Required, an array of objects; each object must have `participant`, and if `type` is `"exact"` or `"percentage"`, then the object must also contain `contribution`.
 
 ## Generating Balance Sheets
 
-The balance sheet provides a summary of each user's net balance after all expenses have been accounted for. It can be downloaded as CSV file from the `/api/balance-sheet/` endpoint.
+The balance sheet provides a summary of each user's net balance after all expenses have been accounted for. It can be downloaded as a CSV file from the `/api/balance-sheet/` endpoint.
 
 ## Contributing
 
