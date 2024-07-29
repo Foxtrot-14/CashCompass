@@ -62,20 +62,24 @@ CashCompass is an application designed to help users manage and share daily expe
 
 ## Authentication
 
-The application uses JWT for authentication. Obtain a token by making a POST request to the `/register/` endpoint with your credentials.
+## API Endpoints
+The application uses JWT for authentication. Obtain a token by making a POST request to the `account/register/` endpoint with your credentials.
 
-- **Obtain Token**
+- **Register Usre**
 
     ```http
-    POST /register/
+    POST /account/register/
     ```
 
     **Request Body:**
 
     ```json
     {
-        "username": "your_username",
-        "password": "your_password"
+    "email":"jhondoe3@gmail.com",
+    "phone":"456121",
+    "name":"Jhon Doe",
+    "password1":"test",
+    "password2":"test"
     }
     ```
 
@@ -88,51 +92,28 @@ The application uses JWT for authentication. Obtain a token by making a POST req
     }
     ```
 
-## API Endpoints
-
-### User Management
-
-- **Add User**
+**Login**
 
     ```http
-    POST /api/users/
+    POST /account/login/
     ```
 
-    **Request Body:**
+ **Request Body:**
 
     ```json
     {
-        "username": "john_doe",
-        "password": "securepassword",
-        "email": "john@example.com"
+    "identifier":"jhondoe3@gmail.com",
+    "password1":"test"
     }
     ```
 
-- **Update User**
-
-    ```http
-    PUT /api/users/{user_id}/
-    ```
-
-    **Request Body:**
+ **Response:**
 
     ```json
     {
-        "username": "jane_doe",
-        "email": "jane@example.com"
+        "refresh": "your_refresh_token",
+        "access": "your_access_token"
     }
-    ```
-
-- **Get User**
-
-    ```http
-    GET /api/users/{user_id}/
-    ```
-
-- **Delete User**
-
-    ```http
-    DELETE /api/users/{user_id}/
     ```
 
 ### Expense Management
@@ -140,33 +121,67 @@ The application uses JWT for authentication. Obtain a token by making a POST req
 - **Add Expense**
 
     ```http
-    POST /api/expenses/
+    POST /api/expense-create/
     ```
 
-    **Request Body:**
+ **Request Body:**
 
     ```json
     {
-        "amount": 100,
-        "description": "Dinner",
-        "split_method": "percentage",  # or "exact", "equal"
-        "splits": [
-            {"user_id": 1, "percentage": 50},
-            {"user_id": 2, "percentage": 50}
-        ]
+    "title": "Office Supplies",
+        "description": "Purchase of office supplies including pens and paper.",
+        "type": 2,
+        "cost": 200,
+        "participants":[{
+        "participant":3,
+        "contribution":25
+        },{
+        "participant":4,
+        "contribution":50
+        }]
     }
+    ```
+- **Get All Expenses for a User**
+
+    ```http
+    GET /api/expense/
+    Authorization: Bearer YOUR_AUTHORIZATION_TOKEN
     ```
 
 - **Get Expense**
 
     ```http
-    GET /api/expenses/{expense_id}/
+    GET /api/expense/{expense_id}/
+    ```
+
+- **Edit Expense**
+
+    ```http
+    POST /api/expense/{expense_id}/
+    ```
+
+ **Request Body:**
+
+    ```json
+    {
+    "title": "Office Supplies",
+        "description": "Purchase of office supplies including pens and paper.",
+        "type": 3, //changin type
+        "cost": 200,
+        "participants":[{
+        "participant":3,
+        "contribution":25
+        },{
+        "participant":4,
+        "contribution":50
+        }]
+    }
     ```
 
 - **Delete Expense**
 
     ```http
-    DELETE /api/expenses/{expense_id}/
+    DELETE /api/expense/{expense_id}/
     ```
 
 ### Balance Sheets
@@ -174,35 +189,26 @@ The application uses JWT for authentication. Obtain a token by making a POST req
 - **Generate Balance Sheet**
 
     ```http
-    GET /api/balance-sheet/
-    ```
-
-    **Query Parameters:**
-
-    - `format` (optional): `pdf` or `csv`
-
-    Example:
-
-    ```http
-    GET /api/balance-sheet/?format=pdf
+    GET /balance-sheet/{balance_id}/
     ```
 
 ## Validation Rules
 
 - **User Management**
-    - `username`: Required, unique, non-empty string.
-    - `password`: Required, minimum length of 8 characters.
-    - `email`: Optional, valid email format.
+    - `email`: Required, unique, non-empty string.
+    - `phone`: Required, valid phone number.
+    - `name`: Required, valid name.
+    - `password`: Required.
 
 - **Expense Management**
-    - `amount`: Required, positive number.
+    - `title`: Required, string.
     - `description`: Optional, maximum length of 255 characters.
-    - `split_method`: Required, must be one of `"exact"`, `"percentage"`, or `"equal"`.
-    - `splits`: Valid only if `split_method` is `"percentage"` or `"exact"`.
+    - `type`: Required, an integer 1 for `"exact"`, 2 for `"equal"`, or 3 for `"percentage"`.
+    - `participants`: Required, an array of objects, every object must have `participant` and if type is `"exact"` or `"percentage"` then the object must also contain `contribution`.
 
 ## Generating Balance Sheets
 
-The balance sheet provides a summary of each user's net balance after all expenses have been accounted for. It can be downloaded as a PDF or CSV file from the `/api/balance-sheet/` endpoint.
+The balance sheet provides a summary of each user's net balance after all expenses have been accounted for. It can be downloaded as CSV file from the `/api/balance-sheet/` endpoint.
 
 ## Contributing
 
