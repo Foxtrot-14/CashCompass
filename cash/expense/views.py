@@ -23,7 +23,10 @@ def expense_list(request):
 @permission_classes([IsAuthenticated])
 @validate_json_data#custom decorator to validate data
 def expense_detail(request, pk):
-    expense = get_object_or_404(Expense, pk=pk)
+    try:
+        expense = Expense.objects.get(id=pk)
+    except Expense.DoesNotExist:
+        return Response({"error":"Expense Does Not Exist"},status=status.HTTP_404_NOT_FOUND)    
     if request.method == 'GET':
         participants = ExpenseParticipant.objects.filter(expense=expense)
         expense_serializer = ExpenseSerializer(expense)
@@ -34,7 +37,7 @@ def expense_detail(request, pk):
         })
 
     elif request.method == 'PUT':
-        serializer = ExpenseSerializer(expense, data=request.data, partial=True)
+        serializer = ExpenseSerializer(expense, data=request.data,partial=True)
         if serializer.is_valid():
             updated_expense = serializer.save()
             participants_data = request.data.get('participants', [])
@@ -50,7 +53,14 @@ def expense_detail(request, pk):
 @permission_classes([IsAuthenticated])
 @validate_json_data
 def expense_create(request):
-    serializer = ExpenseSerializer(data=request.data, partial=True)
+    data=request.data
+    serializer = ExpenseSerializer(data={
+            'title':data['title'],
+            'description':data['description'],
+            'admin':request.user.id,
+            'type':data['type'],
+            'cost':data['cost']
+        })
     if serializer.is_valid():
         expense = serializer.save()
         participants_data = request.data.get('participants', [])
@@ -82,5 +92,4 @@ def expense_balance(request, pk):
             # Log or print the exception for debugging
             print(f"Exception occurred: {e}")
             return HttpResponse("An error occurred while generating the CSV file.", status=500)
-    
     return HttpResponse("Method Not Allowed", status=405)
