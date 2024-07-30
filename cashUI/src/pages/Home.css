@@ -1,0 +1,71 @@
+.hmain {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #c0a3a3;
+}
+.fmain {
+  height: max-content;
+}
+.cmain {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+.htitle {
+  font-family: "Rubik Bubbles", system-ui;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-size: 100px;
+  font-style: normal;
+  color: wh;
+}
+.mback {
+  margin-left: 75px;
+  height: 200px;
+}
+.quickin {
+  background-color: #b4b7bb;
+  border: 2px solid #000000;
+  border-radius: 10px;
+  height: 45px;
+  padding: 5px 5px;
+  width: 900px;
+  font-family: "Rubik Bubbles", system-ui;
+  font-size: 20px;
+  font-weight: bold;
+}
+.but {
+  margin: 15px;
+  width: 90px;
+  height: 40px;
+  border-radius: 10px;
+  background-color: #800020;
+  font-family: "Rubik Bubbles", system-ui;
+  font-size: 20px;
+}
+.but:hover {
+  cursor: pointer;
+}
+.res {
+  height: max-content;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.hlog {
+  position: fixed;
+  top: 40px;
+  right: 40px;
+}
+.text {
+  position: absolute;
+  bottom: 170px;
+  left: 230px;
+  font-family: "Sue Ellen Francisco", cursive;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 35px;
+}
