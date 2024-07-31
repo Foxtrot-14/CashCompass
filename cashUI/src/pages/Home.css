@@ -3,7 +3,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: #c0a3a3;
+  background-color: #747171;
 }
 .fmain {
   height: max-content;
@@ -15,7 +15,7 @@
   height: 100vh;
 }
 .htitle {
-  font-family: "Rubik Bubbles", system-ui;
+  font-family: "Audiowide", sans-serif;
   font-optical-sizing: auto;
   font-weight: 500;
   font-size: 100px;
@@ -27,13 +27,13 @@
   height: 200px;
 }
 .quickin {
-  background-color: #b4b7bb;
+  background-color: #747171;
   border: 2px solid #000000;
   border-radius: 10px;
   height: 45px;
   padding: 5px 5px;
   width: 900px;
-  font-family: "Rubik Bubbles", system-ui;
+  font-family: "Audiowide", sans-serif;
   font-size: 20px;
   font-weight: bold;
 }
@@ -43,17 +43,11 @@
   height: 40px;
   border-radius: 10px;
   background-color: #800020;
-  font-family: "Rubik Bubbles", system-ui;
+  font-family: "Audiowide", sans-serif;
   font-size: 20px;
 }
 .but:hover {
   cursor: pointer;
-}
-.res {
-  height: max-content;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
 }
 .hlog {
   position: fixed;
@@ -68,4 +62,10 @@
   font-weight: 400;
   font-style: normal;
   font-size: 35px;
+}
+@media (max-width:768px){
+  .hmain{
+    flex-direction: column;
+    height: 1000px;
+  }
 }

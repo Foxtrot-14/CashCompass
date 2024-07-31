@@ -6,10 +6,11 @@
   background-color: #800020;
 }
 .quick {
-  font-family: "Rubik Bubbles", system-ui;
+  font-family: "Audiowide", sans-serif;
   font-optical-sizing: auto;
   font-weight: 500;
   font-size: 35px;
+  margin-bottom: 15px;
 }
 .acen {
   width: 1000px;
@@ -18,7 +19,7 @@
   gap: 100px;
   justify-content: center;
   align-items: center;
-  background-color: #b4b7bb;
+  background-color: #747171;
   border-radius: 15px;
 }
 .aside {
@@ -30,13 +31,13 @@
   flex-direction: column;
 }
 .ainp {
-  background-color: #b4b7bb;
+  background-color: #747171;
   border: 2px solid #000000;
   border-radius: 5px;
   height: 35px;
   padding: 5px 5px;
   width: 300px;
-  font-family: "Rubik Bubbles", system-ui;
+  font-family: "Audiowide", sans-serif;
   font-size: 15px;
   font-weight: normal;
 }
@@ -44,14 +45,14 @@
   margin: 5px;
 }
 .log {
-  margin: 5px;
+  margin: 15px 0px 10px 0px;
   width: 90px;
   height: 40px;
   border-radius: 10px;
   color: aliceblue;
   background-color: #800020;
-  font-family: "Rubik Bubbles", system-ui;
-  font-size: 20px;
+  font-family: "Audiowide", sans-serif;
+  font-size: 18px;
 }
 .log:hover {
   cursor: pointer;
