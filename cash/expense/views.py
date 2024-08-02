@@ -21,7 +21,6 @@ def expense_list(request):
 
 @api_view(['GET', 'PUT', 'DELETE'])
 @permission_classes([IsAuthenticated])
-@validate_json_data#custom decorator to validate data
 def expense_detail(request, pk):
     try:
         expense = Expense.objects.get(id=pk)
