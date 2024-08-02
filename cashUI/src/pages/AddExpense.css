@@ -1,0 +1,39 @@
+.expense-form {
+  padding: 65px 0px 50px 0px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  align-items: center;
+  width: 100%;
+  overflow-y: scroll;
+}
+.desc {
+  height: 100px;
+}
+.dropdown {
+  padding: 3px;
+  margin: 0px 15px;
+  width: 170px;
+  border-radius: 10px;
+  border: 2.5px solid black;
+  font-family: "Audiowide", sans-serif;
+  font-size: 18px;
+  font-weight: normal;
+}
+.form {
+  display: flex;
+  position: relative;
+  height: 260px;
+}
+.list {
+  display: flex;
+  flex-direction: column;
+}
+.sub {
+  position: absolute;
+  bottom: 0;
+}
+.par {
+  font-size: 25px;
+}

@@ -6,10 +6,10 @@ import image from "../assets/expenses-page.svg";
 const Dashboard: React.FC = () => {
   return (
     <>
+      <Helmet>
+        <title>Dashboard</title>
+      </Helmet>
       <main className="back">
-        <Helmet>
-          <title>Dashboard</title>
-        </Helmet>
         <section className="cont">
           <h1 className="htitle">
             <img src={image} className="exp-img" />
@@ -22,6 +22,7 @@ const Dashboard: React.FC = () => {
             <Card title="Grocery and Dail" cost="2000" />
             <Card title="Office Expenses" cost="2000" />
           </section>
+          <button className="add-button log">Add New</button>
         </section>
       </main>
     </>

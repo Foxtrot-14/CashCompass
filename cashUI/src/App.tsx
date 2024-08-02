@@ -4,6 +4,8 @@ import Home from "./pages/Home";
 import LogIn from "./pages/LogIn";
 import SignUp from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
+import Detail from "./pages/ExpenseDetail";
+import AddExpense from "./pages/AddExpense";
 function App() {
   return (
     <BrowserRouter>
@@ -12,6 +14,8 @@ function App() {
         <Route path="/login" element={<LogIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/expense-detail/:id" element={<Detail />} />
+        <Route path="/add-expense" element={<AddExpense />} />
       </Routes>
     </BrowserRouter>
   );

@@ -31,16 +31,22 @@
 }
 
 ::-webkit-scrollbar {
-    width: 13px; 
-    height: 12px; 
+  width: 13px;
+  height: 12px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #800020; 
-    border-radius: 10px;
-    border: 3px solid #d4d4d4; 
+  background: #800020;
+  border-radius: 10px;
+  border: 3px solid #d4d4d4;
 }
 
 ::-webkit-scrollbar-thumb:active {
-    background: #800020;
+  background: #800020;
+}
+.add-button {
+  height: 55px;
+  position: fixed;
+  bottom: 30px;
+  right: 70px;
 }
