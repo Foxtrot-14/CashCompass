@@ -82,7 +82,7 @@ const AddExpense: React.FC = () => {
               />
               <br />
             </section>
-            <section className="list">
+            <section className="add-list">
               <h1 className="quick lo par">Participants</h1>
               {inputFields}
             </section>

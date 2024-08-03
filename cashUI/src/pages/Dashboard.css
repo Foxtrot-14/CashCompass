@@ -50,3 +50,8 @@
   bottom: 30px;
   right: 70px;
 }
+.search-button {
+  position: absolute;
+  top: 30px;
+  right: 50px;
+}

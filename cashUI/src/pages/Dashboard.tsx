@@ -23,6 +23,7 @@ const Dashboard: React.FC = () => {
             <Card title="Office Expenses" cost="2000" />
           </section>
           <button className="add-button log">Add New</button>
+          <button className="search-button log">Profile</button>
         </section>
       </main>
     </>

@@ -57,7 +57,7 @@ const ExpenseDetail: React.FC = () => {
       <main className="hmain">
         <article className="cmain">
           <section className="button-group">
-            <button className="log">Edit</button>
+            <button className="log balance">Get Balance Sheet</button>
             <button className="log">Delete</button>
           </section>
           <section className="container">

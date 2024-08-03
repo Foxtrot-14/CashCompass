@@ -58,3 +58,7 @@ class User(AbstractBaseUser):
         verbose_name = 'User'
         verbose_name_plural = 'Users'
         ordering = ['-id']
+
+class Friend(models.Model):
+    friend_1 = models.ForeignKey("account.User",related_name="adder",  on_delete=models.CASCADE)
+    friend_2 = models.ForeignKey("account.User", on_delete=models.CASCADE)

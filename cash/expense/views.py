@@ -13,11 +13,14 @@ import pandas as pd
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def expense_list(request):
-    expenses = Expense.objects.filter(
-        Q(admin=request.user) | Q(participants__participant=request.user)
-    ).distinct()
-    serializer = ExpenseSerializer(expenses, many=True)
-    return Response(serializer.data)
+    try:
+        expenses = Expense.objects.filter(
+            Q(admin=request.user) | Q(participants__participant=request.user)
+        ).distinct()
+        serializer = ExpenseSerializer(expenses, many=True)
+        return Response({"expenses":serializer.data},status=status.HTTP_200_OK)
+    except Expense.DoesNotExist:
+        return Response({"error":"no expenses"},status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['GET', 'PUT', 'DELETE'])
 @permission_classes([IsAuthenticated])
@@ -33,7 +36,7 @@ def expense_detail(request, pk):
         return Response({
             "expense": expense_serializer.data,
             "participants": participant_serializer.data
-        })
+        },status=status.HTTP_200_OK)
 
     elif request.method == 'PUT':
         serializer = ExpenseSerializer(expense, data=request.data,partial=True)
@@ -41,8 +44,8 @@ def expense_detail(request, pk):
             updated_expense = serializer.save()
             participants_data = request.data.get('participants', [])
             handle_expense_participants(updated_expense, request, participants_data)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"expense":serializer.data}, status=status.HTTP_200_OK)
+        return Response({"error":serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
         expense.delete()
@@ -64,11 +67,11 @@ def expense_create(request):
         expense = serializer.save()
         participants_data = request.data.get('participants', [])
         handle_expense_participants(expense, request, participants_data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"expense":serializer.data}, status=status.HTTP_201_CREATED)
+    return Response({"error":serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def expense_balance(request, pk):
     if request.method == 'GET':
         try:

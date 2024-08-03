@@ -16,6 +16,9 @@
   gap: 15px;
   grid-template-columns: repeat(2, 1fr);
 }
+.balance{
+  width: 250px;
+}
 .detail-img {
   position: absolute;
   height: 100px;

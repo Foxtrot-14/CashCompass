@@ -1,0 +1,21 @@
+.pro {
+  height: 50vh;
+  width: 40vw;
+  padding: 25px 0px 15px 25px;
+  background-color: white;
+  border-radius: 15px;
+  position: relative;
+}
+.pro-pic {
+  position: absolute;
+  top: 50px;
+  right: 30px;
+  height: 200px;
+}
+.fr {
+  color: #800020;
+}
+.fr:hover {
+  cursor: pointer;
+  color: blue;
+}

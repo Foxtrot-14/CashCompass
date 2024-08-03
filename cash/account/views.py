@@ -4,10 +4,10 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import authenticate
 from rest_framework.exceptions import ParseError
-from .serializers import UserRegistrationSerializer,UserSerializer
+from .serializers import UserRegistrationSerializer,UserSerializer,FriendsSerializer
 from django.contrib.auth.hashers import make_password
 from rest_framework import status
-from .models import User
+from .models import User,Friend
 from django.db.models import Q
 from .utils import validate_json_request
 #Generating tokens manually
@@ -109,3 +109,23 @@ def userDetail(request,pk):
         else:
             return Response({'error':serializer.errors}, status=status.HTTP_400_BAD_REQUEST)  # Return validation errors
     return Response({'error': 'Method not allowed'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)  # Handle unsupported methods
+
+@api_view(['GET','POST'])
+def user_friends(request):
+    if request.method=="GET":
+        try:
+            friends = Friend.objects.filter(Q(friend_1=request.user.id)|Q(friend_2=request.user.id))
+            serializer = FriendsSerializer(friends,many=True)
+            return Response({"friends":serializer.data},status=status.HTTP_200_OK)
+        except Friend.DoesNotExist:
+            return Response({"error":"No friends"},status=status.HTTP_404_NOT_FOUND)
+    elif request.method=="POST":
+        serializer = FriendsSerializer(data={
+            'friend_1':request.user.id,
+            'friend_2':request.data["friend"]
+        })
+        if serializer.is_valid():
+            return Response({"friends":serializer.data},status=status.HTTP_201_CREATED)
+        else:
+            return Response({"error":serializer.errors},status=status.HTTP_400_BAD_REQUEST)
+    return Response({"error":"Method Not Allowed"},status=status.HTTP_502_BAD_GATEWAY)
