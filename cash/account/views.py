@@ -3,7 +3,6 @@ from rest_framework.decorators import api_view,permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import authenticate
-from rest_framework.exceptions import ParseError
 from .serializers import UserRegistrationSerializer,UserSerializer,FriendsSerializer
 from django.contrib.auth.hashers import make_password
 from rest_framework import status
@@ -52,6 +51,7 @@ def registration(request):
 def login(request):
     #JSON validation for all requests
     if request.method=='POST':
+        print(request.data)
         data = validate_json_request(request)
         if isinstance(data, Response):  # Check if it's an error response
             return data
@@ -109,6 +109,18 @@ def userDetail(request,pk):
         else:
             return Response({'error':serializer.errors}, status=status.HTTP_400_BAD_REQUEST)  # Return validation errors
     return Response({'error': 'Method not allowed'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)  # Handle unsupported methods
+
+@api_view(['GET'])
+def autocomplete(request):
+    query = request.GET.get('q', '')
+    if query:
+        try:
+            users = User.objects.filter(name__icontains=query)
+        except User.DoesNotExist:
+            return Response({"error":"No User by the Name"},status=status.HTTP_404_NOT_FOUND)
+        
+    serializer = UserSerializer(users, many=True)
+    return Response({"users":serializer.data},status=status.HTTP_200_OK)
 
 @api_view(['GET','POST'])
 def user_friends(request):

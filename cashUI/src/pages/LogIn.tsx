@@ -5,27 +5,32 @@ import axiosInstance from "../Request";
 import { Helmet } from "react-helmet";
 import login from "../assets/login.svg";
 import "./LogIn.css";
-const Auth: React.FC = () => {
+
+const Login: React.FC = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState<string>("");
+  const [identifier, setIdentifier] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault(); // Prevent the default form submission behavior
+
     try {
       const result = await axiosInstance.request({
         url: "account/login/",
         method: "post",
         data: {
-          email: email,
+          identifier: identifier,
           password: password,
         },
       });
-      localStorage.setItem("access", result.data.access);
-      localStorage.setItem("refresh", result.data.refresh);
+      if (result.status === 404) {
+        setError("User Not Found");
+      }
+      localStorage.setItem("access", result.data.tokens.access);
+      localStorage.setItem("refresh", result.data.tokens.refresh);
       navigate("/dashboard");
-    } catch (error: any) {
-      setError(error.response.data.error || "An unexpected error occurred");
+    } catch (error: unknown) {
+      //
     }
   };
   return (
@@ -41,11 +46,11 @@ const Auth: React.FC = () => {
             <form onSubmit={handleSubmit}>
               <input
                 className="lo ainp"
-                type="email"
+                type="text"
                 required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email"
+                value={identifier}
+                onChange={(e) => setIdentifier(e.target.value)}
+                placeholder="Enter your email or phone"
               />
               <br />
               <input
@@ -57,7 +62,7 @@ const Auth: React.FC = () => {
                 placeholder="Enter your password"
               />
               <br />
-              <button type="submit" className="log">
+              <button className="log" type="submit">
                 Login
               </button>
             </form>
@@ -71,4 +76,4 @@ const Auth: React.FC = () => {
     </main>
   );
 };
-export default Auth;
+export default Login;

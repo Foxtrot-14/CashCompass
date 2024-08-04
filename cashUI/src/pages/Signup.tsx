@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 const SignUp: React.FC = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState<string>("");
+  const [name, setName] = useState<string>("");
+  const [phone, setPhone] = useState<string>("");
   const [password1, setPassword1] = useState<string>("");
   const [password2, setPassword2] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
@@ -14,19 +16,24 @@ const SignUp: React.FC = () => {
     e.preventDefault();
     try {
       const result = await axiosInstance.request({
-        url: "acount/register/",
+        url: "account/register/",
         method: "post",
         data: {
           email: email,
+          name:name,
+          phone:phone,
           password1: password1,
           password2: password2,
         },
       });
+      console.log(result.data)
       setError(result.data.success);
+      localStorage.setItem("access", result.data.access);
+      localStorage.setItem("refresh", result.data.refresh);
       setTimeout(() => {
-        navigate("/login");
+        navigate("/dashboard");
       }, 3000);
-    } catch (error: any) {
+    } catch (error:any) {
       setError(error.response.data.error || "An unexpected error occurred");
     }
   };
@@ -48,6 +55,24 @@ const SignUp: React.FC = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
+              />
+              <br />
+              <input
+                className="ainp"
+                type="text"
+                required
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Enter your name"
+              />
+              <br />
+              <input
+                className="ainp"
+                type="tel"
+                required
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="Enter your phone"
               />
               <br />
               <input
