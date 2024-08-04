@@ -7,7 +7,6 @@ const AddExpense: React.FC = () => {
   const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = event.target.value;
     setType(selectedValue);
-    console.log("Selected value:", selectedValue);
   };
   const handleAdd = () => {
     setParticipant(participant + 1);

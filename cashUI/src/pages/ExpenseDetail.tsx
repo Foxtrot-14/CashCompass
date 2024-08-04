@@ -20,7 +20,7 @@ interface Response {
   expense: Expense;
   participants: Participant[];
 }
-const data = {
+const data: Response = {
   expense: {
     id: 23,
     title: "Office Supplies",
@@ -48,7 +48,6 @@ const data = {
 const ExpenseDetail: React.FC = () => {
   //   const { id } = useParams();
   const result: Response = data;
-  console.log(result.participants);
   return (
     <>
       <Helmet>

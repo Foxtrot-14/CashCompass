@@ -26,6 +26,7 @@ const Profile: React.FC = () => {
             <h1 className="ex-title">Phone:</h1>
             <h1 className="exp-val">123456</h1>
             <h1 className="ex-title fr">35 Friends</h1>
+            <button className="log">Add</button>
           </section>
         </article>
       </main>

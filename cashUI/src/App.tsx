@@ -18,8 +18,8 @@ function App() {
         <Route path="/profile/:id" element={<Profile />} />
         <Route path="/friends" element={<Friends />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/expense-detail/:id" element={<Detail />} />
         <Route path="/add-expense" element={<AddExpense />} />
+        <Route path="/expense-detail/:id" element={<Detail />} />
       </Routes>
     </BrowserRouter>
   );
