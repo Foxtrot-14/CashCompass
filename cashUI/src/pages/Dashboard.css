@@ -15,7 +15,10 @@
   overflow-y: scroll;
   margin: 15px 10px 0px 0px;
 }
-.exp-contianer {
+.non {
+  color: #800020;
+}
+.exp-container {
   height: auto;
   width: 100vw;
   gap: 8px;

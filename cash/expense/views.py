@@ -66,6 +66,9 @@ def expense_create(request):
     if serializer.is_valid():
         expense = serializer.save()
         participants_data = request.data.get('participants', [])
+        participant_ids = [entry['participant'] for entry in participants_data]
+        if request.user.id in participant_ids:
+            return Response({'error': '''Dont't add yourself'''}, status=status.HTTP_400_BAD_REQUEST)
         handle_expense_participants(expense, request, participants_data)
         return Response({"expense":serializer.data}, status=status.HTTP_201_CREATED)
     return Response({"error":serializer.errors}, status=status.HTTP_400_BAD_REQUEST)

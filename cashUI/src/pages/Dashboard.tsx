@@ -21,13 +21,19 @@ const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const [expenses, setExpenses] = useState<Expense[] | undefined>(undefined);
 
+  const handleAdd = () => {
+    navigate("/add-expense");
+  };
+  const handleProfile = () => {
+    navigate("/profile");
+  };
   useEffect(() => {
     const fetchExpenses = async () => {
       try {
         const token = localStorage.getItem("access");
         if (!token) {
           navigate("/login");
-          return; // Exit early if there's no token
+          return;
         }
         const result = await axiosInstance.request({
           url: "api/expense/",
@@ -56,7 +62,7 @@ const Dashboard: React.FC = () => {
             Your Expenses
           </h1>
           <section className="exp-container">
-            {expenses &&
+            {expenses && expenses.length > 0 ? (
               expenses.map((item) => (
                 <Card
                   key={item.id}
@@ -64,10 +70,17 @@ const Dashboard: React.FC = () => {
                   cost={item.cost}
                   id={item.id}
                 />
-              ))}
+              ))
+            ) : (
+              <h1 className="quick non">You don't have any expenses</h1>
+            )}
           </section>
-          <button className="add-button log">Add New</button>
-          <button className="search-button log">Profile</button>
+          <button className="add-button log" onClick={handleAdd}>
+            Add New
+          </button>
+          <button className="search-button log" onClick={handleProfile}>
+            Profile
+          </button>
         </section>
       </main>
     </>

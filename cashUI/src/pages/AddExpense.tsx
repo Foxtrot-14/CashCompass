@@ -1,38 +1,141 @@
-import { useState, ChangeEvent } from "react";
+import { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import "./AddExpense.css";
+import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
+import axiosInstance from "../Request";
+import axios from "axios";
+interface Participant {
+  participant: number;
+  contribution?: number;
+}
+
+interface Request {
+  title: string;
+  description: string;
+  cost: number;
+  type: number;
+  participants: Participant[];
+}
+
 const AddExpense: React.FC = () => {
-  const [participant, setParticipant] = useState<number>(1);
-  const [type, setType] = useState<string>("");
-  const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    const selectedValue = event.target.value;
-    setType(selectedValue);
+  const [token, setToken] = useState<string>("");
+  const [error, setError] = useState<string | null>(
+    "Your contribution will be calculated automatically just add your friends"
+  );
+  const [partiCount, setPartiCount] = useState<number>(1);
+  const [title, setTitle] = useState<string>("");
+  const [desc, setDesc] = useState<string>("");
+  const [cost, setCost] = useState<number | undefined>(undefined);
+  const [type, setType] = useState<number>(0);
+  const [participants, setParticipants] = useState<Participant[]>([
+    { participant: 0 },
+  ]);
+  const navigate = useNavigate();
+  useEffect(() => {
+    const getAccess = () => {
+      try {
+        const token = localStorage.getItem("access");
+        if (!token) {
+          navigate("/login");
+          return;
+        }
+        setToken(token);
+      } catch (error: unknown) {
+        console.error(error);
+      }
+    };
+    getAccess();
+  }, [navigate]);
+  const handleSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+
+    const data: Request = {
+      title,
+      description: desc,
+      type,
+      cost: cost ?? 0,
+      participants,
+    };
+
+    try {
+      const result = await axiosInstance.request({
+        url: "/api/expense-create/",
+        method: "post",
+        data: data,
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (result.status === 201) {
+        setError("Added Successfully... redirecting");
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 2000);
+      } else {
+        // Handle unexpected status codes
+        setError("Unexpected response from server");
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 400) {
+          setError("Server error: Don't Add yourself");
+          //handle 401 for expired tokens
+        } else {
+          setError(`Request failed with status ${error.response?.status}`);
+        }
+      } else {
+        // Handle unexpected errors
+        setError("An unexpected error occurred");
+      }
+    }
   };
+  const handleTypeChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    setType(Number(event.target.value));
+  };
+
   const handleAdd = () => {
-    setParticipant(participant + 1);
+    setPartiCount(partiCount + 1);
+    setParticipants([...participants, { participant: 0 }]);
   };
+
+  const handleParticipantChange = (index: number, value: number) => {
+    const newParticipants = [...participants];
+    newParticipants[index].participant = value;
+    setParticipants(newParticipants);
+  };
+
+  const handleContributionChange = (index: number, value: number) => {
+    const newParticipants = [...participants];
+    newParticipants[index].contribution = value;
+    setParticipants(newParticipants);
+  };
+
   const inputFields = [];
-  for (let i = 1; i <= participant; i++) {
+  for (let i = 0; i < partiCount; i++) {
     inputFields.push(
-      <>
-        <h3>{`${i}`}</h3>
+      <section key={i}>
+        <h3>{`${i + 1}`}</h3>
         <input
           className="lo ainp"
-          type="text"
+          type="number"
           required
+          onChange={(e) => handleParticipantChange(i, Number(e.target.value))}
           placeholder="Enter Name"
         />
-        {type !== "1" && (
+        {type !== 1 && (
           <input
             className="lo ainp"
             type="number"
             required
+            onChange={(e) =>
+              handleContributionChange(i, Number(e.target.value))
+            }
             placeholder="Enter Contribution"
           />
         )}
-      </>
+      </section>
     );
   }
+
   return (
     <>
       <Helmet>
@@ -41,42 +144,40 @@ const AddExpense: React.FC = () => {
       <main className="hmain">
         <article className="expense-form">
           <h1 className="quick">Enter Details</h1>
-          <form className="form">
+          {error && <p className="error-message">{error}</p>}
+          <form className="form" onSubmit={handleSubmit}>
             <section className="expense">
               <input
                 className="lo ainp"
                 type="text"
                 required
+                onChange={(e) => setTitle(e.target.value)}
                 placeholder="Enter Title"
               />
               <select
                 className="dropdown"
                 id="type"
                 value={type}
-                onChange={handleChange}
+                onChange={handleTypeChange}
               >
-                <option value="">Select Type</option>
-                <option value="1" className="dropdown">
-                  Equal
-                </option>
-                <option value="2" className="dropdown">
-                  Exact
-                </option>
-                <option value="3" className="dropdown">
-                  Percentage
-                </option>
+                <option value="0">Select Type</option>
+                <option value="1">Equal</option>
+                <option value="2">Exact</option>
+                <option value="3">Percentage</option>
               </select>
               <br />
               <textarea
                 className="lo ainp desc"
                 required
-                placeholder="Enter Desctiption"
+                onChange={(e) => setDesc(e.target.value)}
+                placeholder="Enter Description"
               />
               <br />
               <input
                 className="lo ainp"
                 type="number"
                 required
+                onChange={(e) => setCost(Number(e.target.value))}
                 placeholder="Enter Total Cost"
               />
               <br />
@@ -85,7 +186,7 @@ const AddExpense: React.FC = () => {
               <h1 className="quick lo par">Participants</h1>
               {inputFields}
             </section>
-            <button className="log" onClick={handleAdd}>
+            <button type="button" className="log" onClick={handleAdd}>
               Add
             </button>
             <button type="submit" className="log sub">
@@ -97,5 +198,4 @@ const AddExpense: React.FC = () => {
     </>
   );
 };
-
 export default AddExpense;

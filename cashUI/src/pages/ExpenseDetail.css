@@ -1,6 +1,6 @@
 .container {
   height: 80vh;
-  width: 70vw;
+  width: 80vw;
   padding: 40px 0px 100px 0px;
   border-radius: 10px 10px 10px 20px;
   overflow-y: scroll;
@@ -14,7 +14,7 @@
 .participants-container {
   display: grid;
   gap: 15px;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
 }
 .balance{
   width: 250px;

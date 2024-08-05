@@ -10,7 +10,7 @@ interface Cardprops {
 const Card: React.FC<Cardprops> = (prop: Cardprops) => {
   const navigate = useNavigate();
   const handleClick = () => {
-    navigate(`expense-detail/${prop.id}`);
+    navigate(`/expense-detail/${prop.id}`);
   };
   return (
     <article className="card">

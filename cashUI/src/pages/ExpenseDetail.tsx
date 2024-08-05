@@ -1,8 +1,13 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./ExpenseDetail.css";
-// import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import One from "../assets/one-expense.svg";
 import { Helmet } from "react-helmet";
+import axiosInstance from "../Request";
+interface Participant {
+  participant: number;
+  contribution: number;
+}
 interface Expense {
   id: number;
   title: string;
@@ -46,7 +51,39 @@ const data: Response = {
   ],
 };
 const ExpenseDetail: React.FC = () => {
-  //   const { id } = useParams();
+  const navigate = useNavigate();
+  const { id } = useParams<string>();
+  const [response, setResponse] = useState<Response>();
+  const [token, setToken] = useState<string>("");
+  useEffect(() => {
+    const getAccess = () => {
+      try {
+        const token = localStorage.getItem("access");
+        if (!token) {
+          navigate("/login");
+          return;
+        }
+        setToken(token);
+      } catch (error: unknown) {
+        console.error(error);
+      }
+    };
+    getAccess();
+  }, [navigate]);
+  useEffect(() => {
+    const fetchExp = async () => {
+      const result = await axiosInstance.request({
+        url: `/api/expense/${id}`,
+        method: "get",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setResponse(result.data);
+      console.log(result);
+    };
+    fetchExp();
+  }, [id, token, navigate]);
   const result: Response = data;
   return (
     <>
@@ -63,26 +100,26 @@ const ExpenseDetail: React.FC = () => {
             <img src={One} alt="img" className="detail-img" />
             <section>
               <h1 className="ex-title">Title</h1>
-              <h1 className="exp-val">{result.expense.title}</h1>
+              <h1 className="exp-val">{response?.expense.title}</h1>
               <h1 className="ex-title">Total Cost</h1>
-              <h1 className="exp-val">{result.expense.cost}</h1>
+              <h1 className="exp-val">{response?.expense.cost}</h1>
               <h1 className="ex-title">Type</h1>
               <h1 className="exp-val">
-                {result.expense.type === 1
+                {response?.expense.type === 1
                   ? "Equal"
-                  : result.expense.type === 2
+                  : response?.expense.type === 2
                   ? "Exact"
-                  : result.expense.type === 3
+                  : response?.expense.type === 3
                   ? "Percentage"
                   : "Unknown"}
               </h1>
               <h1 className="ex-title">Admin</h1>
-              <h1 className="exp-val">{result.expense.admin}</h1>
+              <h1 className="exp-val">{response?.expense.admin}</h1>
               <h1 className="ex-title">Description</h1>
-              <h1 className="exp-val">{result.expense.description}</h1>
+              <h1 className="exp-val">{response?.expense.description}</h1>
               <h1 className="ex-title">Created At</h1>
               <h1 className="exp-val">
-                {result.expense.created_at
+                {response?.expense.created_at
                   .substring(0, 9)
                   .split("-")
                   .reverse()
@@ -90,7 +127,7 @@ const ExpenseDetail: React.FC = () => {
               </h1>
             </section>
             <section className="participants-container">
-              {result.participants.map((participant: Participant) => (
+              {response?.participants.map((participant: Participant) => (
                 <section>
                   <h1 className="ex-title">Participant</h1>
                   <h1 className="exp-val">{participant.participant}</h1>

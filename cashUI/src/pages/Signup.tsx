@@ -4,6 +4,7 @@ import "./Signup.css";
 import axiosInstance from "../Request";
 import { Helmet } from "react-helmet";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 const SignUp: React.FC = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState<string>("");
@@ -20,21 +21,40 @@ const SignUp: React.FC = () => {
         method: "post",
         data: {
           email: email,
-          name:name,
-          phone:phone,
+          name: name,
+          phone: phone,
           password1: password1,
           password2: password2,
         },
       });
-      console.log(result.data)
-      setError(result.data.success);
-      localStorage.setItem("access", result.data.access);
-      localStorage.setItem("refresh", result.data.refresh);
-      setTimeout(() => {
+      if (result.status === 201) {
+        localStorage.setItem("access", result.data.tokens.access);
+        localStorage.setItem("refresh", result.data.tokens.refresh);
         navigate("/dashboard");
-      }, 3000);
-    } catch (error:any) {
-      setError(error.response.data.error || "An unexpected error occurred");
+      } else {
+        setError("An unexpected status code received");
+      }
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          switch (error.response.status) {
+            case 400:
+              setError("Passwords don't match");
+              break;
+            case 409:
+              setError("User already exists");
+              break;
+            default:
+              setError(`Error: ${error.response.status}`);
+          }
+        } else if (error.request) {
+          setError("Network Error");
+        } else {
+          setError("An unexpected error occurred");
+        }
+      } else {
+        setError("An unexpected error occurred");
+      }
     }
   };
   return (

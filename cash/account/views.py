@@ -45,13 +45,12 @@ def registration(request):
         tokens = get_tokens_for_user(user)
         return Response({'success': 'User registered successfully', 'tokens': tokens}, status=status.HTTP_201_CREATED)
     else:
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_409_CONFLICT)
 
 @api_view(['POST'])
 def login(request):
     #JSON validation for all requests
     if request.method=='POST':
-        print(request.data)
         data = validate_json_request(request)
         if isinstance(data, Response):  # Check if it's an error response
             return data
@@ -81,34 +80,44 @@ def login(request):
     else:
         return Response({'error': 'Method not allowed'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)  # Handle unsupported methods
 
-@api_view(['GET','PATCH'])
+@api_view(['GET', 'PATCH'])
 @permission_classes([IsAuthenticated])
-def userDetail(request,pk):
-    if request.method=='GET':
-        id = pk
+def user_detail(request, pk=None):
+    if request.method == 'GET':
+        # Determine the ID to retrieve
+        user_id = pk if pk else request.user.id
+        
         try:
-            user = User.objects.get(id=id)
+            user = User.objects.get(id=user_id)
         except User.DoesNotExist:
             return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
-        #Serialize the obtained data
-        serializer = UserSerializer(user,partial=True)
-        return Response({"user":serializer.data},status=status.HTTP_200_OK)
-    elif request.method=='PATCH':
-        #JSON validation for all requests
+        
+        # Serialize the obtained data
+        serializer = UserSerializer(user)
+        return Response({"user": serializer.data}, status=status.HTTP_200_OK)
+    
+    elif request.method == 'PATCH':
+        # JSON validation for all requests
         data = validate_json_request(request)
         if isinstance(data, Response):  # Check if it's an error response
             return data
-        id = pk
-        if pk != request.user.id:
-            return Response({'error':'You are not authorized to make changes'},status=status.HTTP_401_UNAUTHORIZED)
-        user = request.user  # Get the authenticated user directly
+        
+        # Check if the user is authorized to make the changes
+        if pk and pk != str(request.user.id):
+            return Response({'error': 'You are not authorized to make changes'}, status=status.HTTP_403_FORBIDDEN)
+        
+        # Use the authenticated user if no specific ID is provided
+        user = request.user if not pk else User.objects.get(id=pk)
+        
+        # Serialize the data
         serializer = UserRegistrationSerializer(user, data=data, partial=True)
         if serializer.is_valid():
             user = serializer.save()
-            return Response({"user":serializer.data},status=status.HTTP_200_OK)
+            return Response({"user": serializer.data}, status=status.HTTP_200_OK)
         else:
-            return Response({'error':serializer.errors}, status=status.HTTP_400_BAD_REQUEST)  # Return validation errors
-    return Response({'error': 'Method not allowed'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)  # Handle unsupported methods
+            return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+    
+    return Response({'error': 'Method not allowed'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 @api_view(['GET'])
 def autocomplete(request):
