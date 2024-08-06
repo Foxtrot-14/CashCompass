@@ -6,8 +6,7 @@
   overflow-y: scroll;
   display: flex;
   justify-content: center;
-  position: relative;
-  gap: 50px;
+  gap: 90px;
   margin-top: 35px;
   background-color: white;
 }
@@ -22,7 +21,8 @@
 .detail-img {
   position: absolute;
   height: 100px;
-  left: 250px;
+  left: 30px;
+  top: 100px;
 }
 .button-group {
   position: absolute;

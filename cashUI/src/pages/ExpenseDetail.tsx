@@ -80,10 +80,42 @@ const ExpenseDetail: React.FC = () => {
         },
       });
       setResponse(result.data);
-      console.log(result);
     };
     fetchExp();
   }, [id, token, navigate]);
+  const handleSheet = async () => {
+    const result = await axiosInstance.request({
+      url: `/api/balance-sheet/${id}/`,
+      method: "get",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      responseType: "blob",
+    });
+    const url = window.URL.createObjectURL(
+      new Blob([result.data], { type: "text/csv" })
+    );
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `${response?.expense.title}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+    console.log(result);
+  };
+  const handleDelete = async () => {
+    const result = await axiosInstance({
+      url: `/api/expense/${id}/`,
+      method: "delete",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (result.status===204){
+      navigate("/dashboard")
+    }
+  };
   const result: Response = data;
   return (
     <>
@@ -93,8 +125,12 @@ const ExpenseDetail: React.FC = () => {
       <main className="hmain">
         <article className="cmain">
           <section className="button-group">
-            <button className="log balance">Get Balance Sheet</button>
-            <button className="log">Delete</button>
+            <button className="log balance" onClick={handleSheet}>
+              Get Balance Sheet
+            </button>
+            <button className="log" onClick={handleDelete}>
+              Delete
+            </button>
           </section>
           <section className="container">
             <img src={One} alt="img" className="detail-img" />
@@ -120,15 +156,15 @@ const ExpenseDetail: React.FC = () => {
               <h1 className="ex-title">Created At</h1>
               <h1 className="exp-val">
                 {response?.expense.created_at
-                  .substring(0, 9)
+                  .substring(0, 10)
                   .split("-")
                   .reverse()
                   .join("-")}
               </h1>
             </section>
             <section className="participants-container">
-              {response?.participants.map((participant: Participant) => (
-                <section>
+              {response?.participants.map((participant: Participant, index) => (
+                <section key={index}>
                   <h1 className="ex-title">Participant</h1>
                   <h1 className="exp-val">{participant.participant}</h1>
                   <h1 className="ex-title">Contribution</h1>

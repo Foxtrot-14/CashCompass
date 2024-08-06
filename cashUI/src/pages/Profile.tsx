@@ -63,8 +63,17 @@ const Profile: React.FC = () => {
                 <h1 className="exp-val">{user?.user.email || "Loading..."}</h1>
                 <h1 className="ex-title">Phone:</h1>
                 <h1 className="exp-val">{user?.user.phone || "Loading..."}</h1>
-                <h1 className="ex-title fr">35 Friends</h1>
-                <button className="log">Add</button>
+                {!id && (
+                  <button
+                    className="log"
+                    onClick={() => {
+                      navigate("/friends");
+                    }}
+                  >
+                    Friends
+                  </button>
+                )}
+                {id && <button className="log">Add</button>}
               </>
             )}
           </section>

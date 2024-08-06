@@ -86,7 +86,6 @@ def user_detail(request, pk=None):
     if request.method == 'GET':
         # Determine the ID to retrieve
         user_id = pk if pk else request.user.id
-        
         try:
             user = User.objects.get(id=user_id)
         except User.DoesNotExist:
@@ -120,6 +119,7 @@ def user_detail(request, pk=None):
     return Response({'error': 'Method not allowed'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def autocomplete(request):
     query = request.GET.get('q', '')
     if query:
@@ -127,25 +127,31 @@ def autocomplete(request):
             users = User.objects.filter(name__icontains=query)
         except User.DoesNotExist:
             return Response({"error":"No User by the Name"},status=status.HTTP_404_NOT_FOUND)
-        
     serializer = UserSerializer(users, many=True)
     return Response({"users":serializer.data},status=status.HTTP_200_OK)
 
 @api_view(['GET','POST'])
+@permission_classes([IsAuthenticated])
 def user_friends(request):
     if request.method=="GET":
         try:
-            friends = Friend.objects.filter(Q(friend_1=request.user.id)|Q(friend_2=request.user.id))
+            friends = Friend.objects.filter(friend_1=request.user.id)
             serializer = FriendsSerializer(friends,many=True)
+            for friend in serializer.data:
+                if "friend_1" in friend:
+                    del friend["friend_1"]
             return Response({"friends":serializer.data},status=status.HTTP_200_OK)
         except Friend.DoesNotExist:
             return Response({"error":"No friends"},status=status.HTTP_404_NOT_FOUND)
     elif request.method=="POST":
+        if request.data["friend"]==request.user.id:
+            return Response({"error":"Cannot be freinds with self"},status=status.HTTP_400_BAD_REQUEST)
         serializer = FriendsSerializer(data={
             'friend_1':request.user.id,
             'friend_2':request.data["friend"]
         })
         if serializer.is_valid():
+            serializer.save()
             return Response({"friends":serializer.data},status=status.HTTP_201_CREATED)
         else:
             return Response({"error":serializer.errors},status=status.HTTP_400_BAD_REQUEST)
