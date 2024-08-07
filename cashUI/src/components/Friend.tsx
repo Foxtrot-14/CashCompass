@@ -1,7 +1,6 @@
 import React from "react";
 import "./Friend.css";
 import friend from "../assets/friend.svg";
-import { useNavigate } from "react-router-dom";
 interface User {
   email: string;
   id: number;
@@ -9,9 +8,8 @@ interface User {
   phone: string;
 }
 const Friend: React.FC<User> = (user: User) => {
-  const navigate = useNavigate();
   const handleClick = () => {
-    navigate(`/profile/${user.id}`);
+    window.open(`/profile/${user.id}`, "_blank", "noopener,noreferrer");
   };
   return (
     <article className="friend-card" onClick={handleClick}>

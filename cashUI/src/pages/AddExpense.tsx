@@ -16,7 +16,6 @@ interface Request {
   type: number;
   participants: Participant[];
 }
-
 const AddExpense: React.FC = () => {
   const [token, setToken] = useState<string>("");
   const [error, setError] = useState<string | null>(

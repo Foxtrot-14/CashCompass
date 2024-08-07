@@ -14,20 +14,47 @@ interface User {
 interface Response {
   user: User;
 }
+interface Friends {
+  friend_2: number;
+}
 const Profile: React.FC = () => {
   const [user, setUser] = useState<Response | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [token, setToken] = useState<string>("");
   const { id } = useParams<{ id?: string }>();
   const navigate = useNavigate();
-
+  const [isFriend, setFriend] = useState<boolean>(false);
+  const [ids, setIds] = useState<Friends[]>([]);
+  const fetchToken = () => {
+    const token = localStorage.getItem("access");
+    if (!token) {
+      navigate("/login");
+      return null;
+    }
+    return token;
+  };
+  const addFriend = async () => {
+    try {
+      const result = axiosInstance.request({
+        url: "/account/friends/",
+        method: "post",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        data: {
+          friend: id,
+        },
+      });
+      if ((await result).status == 201) {
+        navigate("/friends/");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const token = localStorage.getItem("access");
-        if (!token) {
-          navigate("/login");
-          return;
-        }
         const url = id ? `account/user/${id}` : "account/user/";
         const result = await axiosInstance.get(url, {
           headers: {
@@ -40,14 +67,45 @@ const Profile: React.FC = () => {
         setError("Failed to load user data. Please try again later.");
       }
     };
-
-    fetchUser();
-  }, [id, navigate]);
-
+    const getFriends = async () => {
+      try {
+        const result = await axiosInstance.request({
+          url: `/account/friends`,
+          method: "get",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setIds(result.data["friends"]);
+      } catch (error) {
+        console.error("Failed to fetch friends", error);
+      }
+    };
+    const token = fetchToken();
+    if (!token) {
+      navigate("/login");
+    } else if (token) {
+      setToken(token);
+      fetchUser();
+      getFriends();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [navigate]);
+  useEffect(() => {
+    const check = (arr: Friends[]) => {
+      arr.map((item) => {
+        if (item.friend_2 === Number(id)) {
+          setFriend(true);
+          console.log("True");
+        }
+      });
+    };
+    check(ids);
+  }, [id, ids]);
   return (
     <>
       <Helmet>
-        <title>Profile Page</title>
+        <title>{user?.user.name || "Loading..."}</title>
       </Helmet>
       <main className="hmain">
         <article className="cmain">
@@ -57,6 +115,12 @@ const Profile: React.FC = () => {
               <p className="error-message">{error}</p>
             ) : (
               <>
+                {id && (
+                  <>
+                    <h1 className="ex-title">ID:</h1>
+                    <h1 className="exp-val">{user?.user.id || "Loading..."}</h1>
+                  </>
+                )}
                 <h1 className="ex-title">Name:</h1>
                 <h1 className="exp-val">{user?.user.name || "Loading..."}</h1>
                 <h1 className="ex-title">Email:</h1>
@@ -73,7 +137,11 @@ const Profile: React.FC = () => {
                     Friends
                   </button>
                 )}
-                {id && <button className="log">Add</button>}
+                {id && !isFriend && (
+                  <button className="log" onClick={addFriend}>
+                    Add
+                  </button>
+                )}
               </>
             )}
           </section>
