@@ -3,6 +3,12 @@
 ## Overview
 
 CashCompass is an application designed to help users manage and share daily expenses among a group. It offers three methods for splitting expenses: exact amounts, percentages, or equal shares. Users can track their expenses, view balances, and generate downloadable balance sheets.
+Hosted [(http://4.186.40.196:8000/)](http://4.186.40.196:8000/)
+## Live Demo
+
+
+https://github.com/user-attachments/assets/72e58898-1867-4128-8482-2b2e6857ab38
+
 
 ## Features
 
