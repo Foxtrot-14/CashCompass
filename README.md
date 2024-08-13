@@ -19,11 +19,10 @@ https://github.com/user-attachments/assets/72e58898-1867-4128-8482-2b2e6857ab38
 
 ## Tech Stack
 
-- **Framework**: Django
+- **Framework**: Django, React, TypeScript
 - **Authentication**: JSON Web Tokens (JWT)
 - **Database**: SQLite (default) or configure with other databases
 - **Libraries**: Django REST Framework, PyJWT
-
 ## Setup and Installation
 
 1. **Clone the Repository**
